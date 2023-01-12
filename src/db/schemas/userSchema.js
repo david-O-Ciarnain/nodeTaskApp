@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 export const userSchem = new Schema({
   name: {
     type: String,
-    minlength:1,
+    minlength:5,
     default: "user",
     required: true,
     trim: true,

@@ -18,7 +18,7 @@ app.post("/users", (req, res) => {
 app.get("/users", (req, res) => {
   Users.find({})
     .then((data) => res.send(data))
-    .catch((error) => res.status(500).send("Server error"));
+    .catch((error) => res.status(500).send());
 });
 
 app.get("/users/:id", (req, res) => {
@@ -27,11 +27,11 @@ app.get("/users/:id", (req, res) => {
   Users.findById(_id)
     .then((data) => {
       if (!data) {
-        return res.status(404).send("User not found");
+        return res.status(404).send();
       }
       res.send(data);
     })
-    .catch((error) => res.status(400).send("Server error"));
+    .catch((error) => res.status(400).send());
 });
 
 app.post("/tasks", (req, res) => {
@@ -46,7 +46,7 @@ app.post("/tasks", (req, res) => {
 app.get("/tasks", (req, res) => {
   Tasks.find({})
     .then((data) => res.send(data))
-    .catch((error) => res.satus(500).send("Server error"));
+    .catch((error) => res.status(500).send());
 });
 
 app.get("/tasks/:id", (req, res) => {
@@ -55,11 +55,11 @@ app.get("/tasks/:id", (req, res) => {
   Tasks.findById(_id)
     .then((data) => {
       if (!data) {
-        return res.status(404).res.send("Can't find tasks");
+        return res.status(404).res.send();
       }
       res.send(data);
     })
-    .catch(() => res.status(500).send("Server error"));
+    .catch(() => res.status(500).send());
 });
 
 app.listen(port, () => console.log("Server is up on port: " + port));
