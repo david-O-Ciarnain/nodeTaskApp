@@ -51,6 +51,15 @@ app.get("/tasks", (req, res) => {
 
 app.get("/tasks/:id", (req, res) => {
   const _id = req.params.id;
+
+  Tasks.findById(_id)
+    .then((data) => {
+      if (!data) {
+        return res.status(404).res.send("Can't find tasks");
+      }
+      res.send(data);
+    })
+    .catch(() => res.status(500).send("Server error"));
 });
 
 app.listen(port, () => console.log("Server is up on port: " + port));
