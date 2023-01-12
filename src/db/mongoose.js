@@ -20,20 +20,23 @@ const Users = mongoose.model("users", {
     },
     default: "user",
     required: true,
+    trim: true,
   },
   email: {
     type: String,
     validate(value) {
       if (!validator.isEmail(value)) throw new Error("Invalid email");
     },
-    required:true
+    required: true,
+    lowercase: true,
+    trim: true,
   },
   age: {
     type: Number,
     validate(value) {
       if (value < 0) throw new Error("Age must be a postive number");
     },
-    min: 18,
+    default: 15,
   },
 });
 
@@ -54,7 +57,7 @@ const Tasks = mongoose.model("tasks", {
 });
 
 const task = new Tasks({
-  description: "Completed this section today[//#¤",
+  description: "Completed this section today",
   completed: false,
 });
 
@@ -63,9 +66,10 @@ task
   .then(() => console.log(task))
   .catch((error) => console.log(error));
 
-/*const user = new User({
+const user = new Users({
   name: "Sven",
-  age: "error",
+  age: 18,
+  email:"david951@live.se"
 });
 
 user
@@ -76,4 +80,4 @@ user
   .catch((error) => {
     console.log("Error" + error);
   });
-*/
+
