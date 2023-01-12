@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
-import { userSchem } from "../util/userSchema.js";
-import { taskSchem } from "../util/taskschema.js";
-import dotenv from "dotenv";
+import { userSchem } from "./util/userSchema.js";
+import { taskSchem } from "./util/taskschema.js";
 
-const envConfig = dotenv.config();
-const env = process.env;
 
 mongoose.connect("mongodb://127.0.0.1:27017/task-manger-api", {
   useNewUrlParser: true,
