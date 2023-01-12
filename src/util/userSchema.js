@@ -18,9 +18,10 @@ export const userSchem = Schema({
     type: String,
     required: true,
     trim: true,
+    minlength: 7,
     validate(value) {
-      if (validator.contains(value, "password") || value.length < 6)
-        throw new Error("Invalid password, min 6 letters, can't be password");
+      if (validator.contains(value.toLowerCase(), "password"))
+        throw new Error("Invalid password, can't be password");
     },
   },
   email: {

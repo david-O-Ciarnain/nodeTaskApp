@@ -30,7 +30,7 @@ const user = new Users({
   name: "Sven",
   age: 18,
   email:"david951@live.se",
-  password:"12345"
+  password:"1233446"
 });
 
 user
