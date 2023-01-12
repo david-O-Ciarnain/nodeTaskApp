@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "mongodb": "^4.13.0"
+    "mongodb": "^4.13.0",
+    "mongoose": "^6.8.3",
+    "validator": "^13.7.0"
   }
 }
