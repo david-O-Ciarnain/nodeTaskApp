@@ -6,10 +6,7 @@ const Schema = mongoose.Schema;
 export const userSchem = new Schema({
   name: {
     type: String,
-    validate(value) {
-      if (!validator.isAlpha(value))
-        throw new Error("Name can only be letters");
-    },
+    minlength:1,
     default: "user",
     required: true,
     trim: true,
