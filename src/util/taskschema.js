@@ -3,14 +3,16 @@ import validator from "validator";
 
 const Schema = mongoose.Schema;
 
-
 export const taskSchem = new Schema({
-    description: {
-      type: String,
-      match:/\w/gi,
-      required: true,
-    },
-    completed: {
-      type: Boolean,
-    },
-  })
+  description: {
+    type: String,
+    trim: true,
+    minlength:3,
+    required: true,
+    
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
+});

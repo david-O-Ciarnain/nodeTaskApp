@@ -42,4 +42,4 @@ export const userSchem = Schema({
   },
 });
 
-///((?!password).)*$[a-z0-9]{6,}/
+
