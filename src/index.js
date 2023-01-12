@@ -21,6 +21,19 @@ app.get("/users", (req, res) => {
     .catch((error) => res.status(500).send("Server error"));
 });
 
+app.get("/users/:id", (req, res) => {
+  const _id = req.params.id;
+
+  Users.findById(_id)
+    .then((data) => {
+      if (!data) {
+        return res.status(404).send("User not found");
+      }
+      res.send(data);
+    })
+    .catch((error) => res.status(400).send("Server error"));
+});
+
 app.post("/tasks", (req, res) => {
   const task = new Tasks(req.body);
 
@@ -30,10 +43,14 @@ app.post("/tasks", (req, res) => {
     .catch((error) => res.status(400).send(error.errors.description.message));
 });
 
-app.get("/tasks",(req,res) => {
-    Tasks.find({})
+app.get("/tasks", (req, res) => {
+  Tasks.find({})
     .then((data) => res.send(data))
-    .catch(error => res.satus(500).send("Server error"))
-})
+    .catch((error) => res.satus(500).send("Server error"));
+});
+
+app.get("/tasks/:id", (req, res) => {
+  const _id = req.params.id;
+});
 
 app.listen(port, () => console.log("Server is up on port: " + port));
