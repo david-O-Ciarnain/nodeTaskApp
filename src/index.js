@@ -6,6 +6,8 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+//** USER ENDPOINTS **//
+
 app.post("/users", async (req, res) => {
   const user = new Users(req.body);
 
@@ -42,6 +44,32 @@ app.get("/users/:id", async (req, res) => {
     res.status(400).send(error);
   }
 });
+
+app.patch("/users/:id", async (req, res) => {
+  const _id = req.params.id;
+  const body = req.body;
+
+  try {
+    const user = await Users.findByIdAndUpdate(_id, body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    if (error["errors"].hasOwnProperty("password"))
+      return res.status(400).send(error["errors"]["password"].message);
+    else if (error["errors"].hasOwnProperty("name"))
+      return res.status(400).send(error["errors"]["name"].message);
+
+    res.status(500).send();
+  }
+});
+
+//** TASK ENDPOINTS **//
 
 app.post("/tasks", async (req, res) => {
   const task = new Tasks(req.body);
