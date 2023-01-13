@@ -16,9 +16,11 @@ app.post("/users", async (req, res) => {
     res.status(201).send(user);
   } catch (error) {
     if (error["errors"].hasOwnProperty("password"))
-      res.status(400).send(error["errors"]["password"].message);
+      return res.status(400).send(error["errors"]["password"].message);
     else if (error["errors"].hasOwnProperty("name"))
-      res.status(400).send(error["errors"]["name"].message);
+      return res.status(400).send(error["errors"]["name"].message);
+    else if (error["errors"].hasOwnProperty("email"))
+      return res.status(400).send(error["errors"]["email"].message);
   }
 });
 
@@ -64,6 +66,8 @@ app.patch("/users/:id", async (req, res) => {
       return res.status(400).send(error["errors"]["password"].message);
     else if (error["errors"].hasOwnProperty("name"))
       return res.status(400).send(error["errors"]["name"].message);
+    else if (error["errors"].hasOwnProperty("email"))
+      return res.status(400).send(error["errors"]["email"].message);
 
     res.status(500).send();
   }
