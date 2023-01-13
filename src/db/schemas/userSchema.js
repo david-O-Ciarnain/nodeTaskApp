@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 export const userSchem = new Schema({
   name: {
     type: String,
-    minlength: 5,
+    minlength: 1,
     required: true,
     trim: true,
   },
@@ -34,6 +34,6 @@ export const userSchem = new Schema({
     validate(value) {
       if (value < 0) throw new Error("Age must be a postive number");
     },
-    default: 15,
+    default: 0,
   },
 });
