@@ -51,29 +51,28 @@ app.post("/tasks", async (req, res) => {
   } catch (error) {
     res.status(400).send(error["errors"]["description"].message);
   }
-  // task
-  //   .save()
-  //   .then(() => res.status(201).send(task))
-  //   .catch((error) => res.status(400).send(error.errors.description.message));
 });
 
-app.get("/tasks", (req, res) => {
-  Tasks.find({})
-    .then((data) => res.send(data))
-    .catch((error) => res.status(500).send());
+app.get("/tasks", async (req, res) => {
+  try {
+    const task = await Tasks.find({});
+    res.send(task);
+  } catch (error) {
+    res.status(500).send();
+  }
 });
 
-app.get("/tasks/:id", (req, res) => {
+app.get("/tasks/:id", async (req, res) => {
   const _id = req.params.id;
 
-  Tasks.findById(_id)
-    .then((data) => {
-      if (!data) {
-        return res.status(404).res.send();
-      }
-      res.send(data);
-    })
-    .catch(() => res.status(500).send());
+  try {
+    const task = await Tasks.findById(_id);
+    if (!task) return res.status(404).send();
+
+    res.send(task);
+  } catch (error) {
+    res.status(400).send();
+  }
 });
 
 app.listen(port, () => console.log("Server is up on port: " + port));
