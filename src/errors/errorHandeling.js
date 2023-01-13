@@ -1,6 +1,7 @@
 //User errors
 
 export const inValidUserInput = (error) => {
+  console.log(error);
   if (error["errors"].hasOwnProperty("password"))
     return error["errors"]["password"].message;
   else if (error["errors"].hasOwnProperty("name"))
