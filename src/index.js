@@ -6,13 +6,18 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.post("/users", (req, res) => {
+app.post("/users", async (req, res) => {
   const user = new Users(req.body);
 
-  user
-    .save()
-    .then(() => res.status(201).send(user))
-    .catch((error) => res.status(400).send(error.errors.password.message));
+  try {
+    await user.save();
+    res.status(201).send(user);
+  } catch (error) {
+    if (error.errors.hasOwnProperty("password"))
+      res.status(400).send(error["errors"]["password"].message);
+    else if (error.errors.hasOwnProperty("name"))
+      res.status(400).send(error.errors.name.message);
+  }
 });
 
 app.get("/users", (req, res) => {

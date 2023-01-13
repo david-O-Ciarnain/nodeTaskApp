@@ -6,8 +6,7 @@ const Schema = mongoose.Schema;
 export const userSchem = new Schema({
   name: {
     type: String,
-    minlength:5,
-    default: "user",
+    minlength: 5,
     required: true,
     trim: true,
   },
@@ -38,5 +37,3 @@ export const userSchem = new Schema({
     default: 15,
   },
 });
-
-
