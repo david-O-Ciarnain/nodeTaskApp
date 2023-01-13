@@ -73,6 +73,21 @@ app.patch("/users/:id", async (req, res) => {
   }
 });
 
+app.delete("/users/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const user = await Users.findByIdAndDelete(id);
+
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
 //** TASK ENDPOINTS **//
 
 app.post("/tasks", async (req, res) => {
@@ -132,4 +147,19 @@ app.patch("/tasks/:id", async (req, res) => {
   }
 });
 
+app.delete("/tasks/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const tasks = await Tasks.findByIdAndDelete(id);
+
+    if (!tasks) {
+      return res.status(404).send();
+    }
+
+    res.send(tasks);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
 app.listen(port, () => console.log("Server is up on port: " + port));

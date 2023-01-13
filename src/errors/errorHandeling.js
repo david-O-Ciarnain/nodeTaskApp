@@ -9,7 +9,7 @@ export const inValidUserInput = (error) => {
     return error["errors"]["email"].message;
 };
 
-export const inValidUpdateInput = (body, allowedUpdates) =>
+export const inValidUpdateInput = (body = {}, allowedUpdates = []) =>
   Object.keys(body).every((allowed) => allowedUpdates.includes(allowed));
 
 //Task Errors
