@@ -13,39 +13,48 @@ app.post("/users", async (req, res) => {
     await user.save();
     res.status(201).send(user);
   } catch (error) {
-    if (error.errors.hasOwnProperty("password"))
+    if (error["errors"].hasOwnProperty("password"))
       res.status(400).send(error["errors"]["password"].message);
-    else if (error.errors.hasOwnProperty("name"))
-      res.status(400).send(error.errors.name.message);
+    else if (error["errors"].hasOwnProperty("name"))
+      res.status(400).send(error["errors"]["name"].message);
   }
 });
 
-app.get("/users", (req, res) => {
-  Users.find({})
-    .then((data) => res.send(data))
-    .catch((error) => res.status(500).send());
+app.get("/users", async (req, res) => {
+  try {
+    const users = await Users.find({});
+    res.send(users);
+  } catch (error) {
+    res.status(500).send();
+  }
 });
 
-app.get("/users/:id", (req, res) => {
+app.get("/users/:id", async (req, res) => {
   const _id = req.params.id;
 
-  Users.findById(_id)
-    .then((data) => {
-      if (!data) {
-        return res.status(404).send();
-      }
-      res.send(data);
-    })
-    .catch((error) => res.status(400).send());
+  try {
+    const user = await Users.findById(_id);
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
 });
 
-app.post("/tasks", (req, res) => {
+app.post("/tasks", async (req, res) => {
   const task = new Tasks(req.body);
-
-  task
-    .save()
-    .then(() => res.status(201).send(task))
-    .catch((error) => res.status(400).send(error.errors.description.message));
+  try {
+    await task.save();
+    res.status(201).send(task);
+  } catch (error) {
+    res.status(400).send(error["errors"]["description"].message);
+  }
+  // task
+  //   .save()
+  //   .then(() => res.status(201).send(task))
+  //   .catch((error) => res.status(400).send(error.errors.description.message));
 });
 
 app.get("/tasks", (req, res) => {
