@@ -1,7 +1,10 @@
 import express from "express";
 import { Tasks, Users } from "./db/mongoose.js";
-import { inValidTaskInput } from "./errors/taskErrorHandeling.js";
-import { inValidUserInput } from "./errors/userErrorHandeling.js";
+import {
+  inValidUpdateInput,
+  inValidUserInput,
+  inValidTaskInput,
+} from "./errors/errorHandeling.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -49,11 +52,8 @@ app.patch("/users/:id", async (req, res) => {
   const body = req.body;
 
   const allowedUpdates = ["name", "email", "password", "age"];
-  const isValidOperation = Object.keys(body).every((allowed) =>
-    allowedUpdates.includes(allowed)
-  );
 
-  if (!isValidOperation) {
+  if (!inValidUpdateInput(body, allowedUpdates)) {
     return res.status(404).send({ error: "Invalid inputs" });
   }
   try {
@@ -113,11 +113,7 @@ app.patch("/tasks/:id", async (req, res) => {
 
   const allowedUpdates = ["description", "completed"];
 
-  const isValidOperation = Object.keys(body).every((allowed) =>
-    allowedUpdates.includes(allowed)
-  );
-
-  if (!isValidOperation) {
+  if (!inValidUpdateInput(body, allowedUpdates)) {
     return res.status(400).send({ error: "Ivalid inputs" });
   }
 
