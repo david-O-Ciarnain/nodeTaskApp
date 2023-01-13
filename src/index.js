@@ -1,5 +1,7 @@
 import express from "express";
 import { Tasks, Users } from "./db/mongoose.js";
+import { inValidTaskInput } from "./errors/taskErrorHandeling.js";
+import { inValidUserInput } from "./errors/userErrorHandeling.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,12 +17,7 @@ app.post("/users", async (req, res) => {
     await user.save();
     res.status(201).send(user);
   } catch (error) {
-    if (error["errors"].hasOwnProperty("password"))
-      return res.status(400).send(error["errors"]["password"].message);
-    else if (error["errors"].hasOwnProperty("name"))
-      return res.status(400).send(error["errors"]["name"].message);
-    else if (error["errors"].hasOwnProperty("email"))
-      return res.status(400).send(error["errors"]["email"].message);
+    res.status(400).send(inValidUserInput(error));
   }
 });
 
@@ -70,12 +67,7 @@ app.patch("/users/:id", async (req, res) => {
     }
     res.send(user);
   } catch (error) {
-    if (error["errors"].hasOwnProperty("password"))
-      return res.status(400).send(error["errors"]["password"].message);
-    else if (error["errors"].hasOwnProperty("name"))
-      return res.status(400).send(error["errors"]["name"].message);
-    else if (error["errors"].hasOwnProperty("email"))
-      return res.status(400).send(error["errors"]["email"].message);
+    res.status(400).send(inValidUserInput(error));
 
     res.status(500).send();
   }
@@ -89,7 +81,7 @@ app.post("/tasks", async (req, res) => {
     await task.save();
     res.status(201).send(task);
   } catch (error) {
-    res.status(400).send(error["errors"]["description"].message);
+    res.status(400).send(inValidTaskInput(error));
   }
 });
 
@@ -140,7 +132,7 @@ app.patch("/tasks/:id", async (req, res) => {
     }
     res.send(task);
   } catch (error) {
-    res.status(400).send(error["errors"]["description"].message);
+    res.status(400).send(inValidTaskInput(error));
   }
 });
 
