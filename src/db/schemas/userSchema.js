@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import { Users } from "../mongoose.js";
 
 const Schema = mongoose.Schema;
 
@@ -29,6 +30,7 @@ export const userSchem = new Schema({
     required: true,
     lowercase: true,
     trim: true,
+    unique: true,
   },
   age: {
     type: Number,
@@ -39,6 +41,24 @@ export const userSchem = new Schema({
   },
 });
 
+userSchem.statics.finByCredentials = async function (email, password) {
+  const user = await Users.findOne({ email });
+
+  if (!user) {
+    throw new Error("Unable to login");
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new Error("Unable to login");
+  }
+
+  return user;
+};
+
+//Hash password
+//midleWare
 userSchem.pre("save", async function (next) {
   const user = this;
 

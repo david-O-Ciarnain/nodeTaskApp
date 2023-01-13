@@ -17,6 +17,17 @@ router.post("/users", async (req, res) => {
   }
 });
 
+router.post("/users/login", async (req, res) => {
+  const body = req.body;
+
+  try {
+    const user = await Users.finByCredentials(body.email, body.password);
+    res.send(user);
+  } catch (error) {
+    res.status(400).send();
+  }
+});
+
 router.get("/users", async (req, res) => {
   try {
     const users = await Users.find({});
@@ -50,6 +61,7 @@ router.patch("/users/:id", async (req, res) => {
     return res.status(404).send({ error: "Invalid inputs" });
   }
   try {
+    //need this setup for middleware, mongoose skips middleware otherwise
     const user = await Users.findById(_id);
     Object.keys(body).forEach((update) => (user[update] = body[update]));
 

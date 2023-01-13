@@ -1,8 +1,8 @@
 //User errors
 
 export const inValidUserInput = (error) => {
-  console.log(error);
-  if (error["errors"].hasOwnProperty("password"))
+  if (error["keyValue"].hasOwnProperty("email")) return "Email Already Taken";
+  else if (error["errors"].hasOwnProperty("password"))
     return error["errors"]["password"].message;
   else if (error["errors"].hasOwnProperty("name"))
     return error["errors"]["name"].message;
