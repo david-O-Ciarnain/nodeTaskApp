@@ -61,7 +61,6 @@ router.patch("/users/:id", async (req, res) => {
     return res.status(404).send({ error: "Invalid inputs" });
   }
   try {
-    //need this setup for middleware, mongoose skips middleware otherwise
     const user = await Users.findById(_id);
     Object.keys(body).forEach((update) => (user[update] = body[update]));
 
