@@ -1,5 +1,6 @@
 import express from "express";
 import { Users } from "../db/mongoose.js";
+import { auth } from "../middleware/auth.js";
 const router = express.Router();
 import {
   inValidPatchInput,
@@ -31,16 +32,23 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-router.get("/users", async (req, res) => {
+router.post("users/logout", auth, async (req, res) => {
   try {
-    const users = await Users.find({});
-    res.send(users);
+    req.user.tokens = req.user.tokens.filter(
+      (token) => token.token !== req.token
+    );
+    await req.res.user.save();
+    res.send();
   } catch (error) {
     res.status(500).send();
   }
 });
 
-router.get("/users/:id", async (req, res) => {
+router.get("/users/me", auth, async (req, res) => {
+  res.send(req.user);
+});
+
+router.get("/users/:id", auth, async (req, res) => {
   const _id = req.params.id;
 
   try {
@@ -54,7 +62,7 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
-router.patch("/users/:id", async (req, res) => {
+router.patch("/users/:id", auth, async (req, res) => {
   const _id = req.params.id;
   const body = req.body;
 
@@ -80,7 +88,7 @@ router.patch("/users/:id", async (req, res) => {
   }
 });
 
-router.delete("/users/:id", async (req, res) => {
+router.delete("/users/:id", auth, async (req, res) => {
   const id = req.params.id;
 
   try {
