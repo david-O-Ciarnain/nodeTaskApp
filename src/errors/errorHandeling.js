@@ -1,8 +1,7 @@
 //User errors
 
 export const inValidUserInput = (error) => {
-  if (error["keyValue"].hasOwnProperty("email")) return "Email Already Taken";
-  else if (error["errors"].hasOwnProperty("password"))
+  if (error["errors"].hasOwnProperty("password"))
     return error["errors"]["password"].message;
   else if (error["errors"].hasOwnProperty("name"))
     return error["errors"]["name"].message;
@@ -12,6 +11,14 @@ export const inValidUserInput = (error) => {
 
 export const inValidUpdateInput = (body = {}, allowedUpdates = []) =>
   Object.keys(body).every((allowed) => allowedUpdates.includes(allowed));
+
+export const inValidPatchInput = (error) => {
+  if (error["keyValue"].hasOwnProperty("email")) return "Email Already Taken";
+  else if (error["errors"].hasOwnProperty("password"))
+    return error["errors"]["password"].message;
+  else if (error["errors"].hasOwnProperty("name"))
+    return error["errors"]["name"].message;
+};
 
 //Task Errors
 

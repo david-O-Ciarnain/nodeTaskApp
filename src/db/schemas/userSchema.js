@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import { Users } from "../mongoose.js";
+import jwt from "jsonwebtoken";
 
 const Schema = mongoose.Schema;
 
@@ -39,7 +40,26 @@ export const userSchem = new Schema({
     },
     default: 0,
   },
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
+
+userSchem.methods.generateAuthToken = async function () {
+  const user = this;
+  const token = jwt.sign({ _id: user.id.toString() }, "thisneedtochange");
+
+  user.tokens = user.tokens.concat({ token });
+
+  await user.save();
+
+  return token;
+};
 
 userSchem.statics.finByCredentials = async function (email, password) {
   const user = await Users.findOne({ email });
