@@ -45,10 +45,10 @@ router.get("/tasks/:id", auth, async (req, res) => {
   }
 });
 
-router.patch("/tasks/:id", async (req, res) => {
+router.patch("/tasks/:id", auth, async (req, res) => {
   const _id = req.params.id;
   const body = req.body;
-
+  const author = req.user._id;
   const allowedUpdates = ["description", "completed"];
 
   if (!inValidUpdateInput(body, allowedUpdates)) {
@@ -56,26 +56,24 @@ router.patch("/tasks/:id", async (req, res) => {
   }
 
   try {
-    const task = await Tasks.findById(_id);
-
-    Object.keys(body).forEach((update) => (task[update] = body[update]));
-
-    await task.save();
+    const task = await Tasks.findOne({ _id, author });
 
     if (!task) {
       return res.status(404).send();
     }
+    Object.keys(body).forEach((update) => (task[update] = body[update]));
+    await task.save();
     res.send(task);
   } catch (error) {
     res.status(400).send(inValidTaskInput(error));
   }
 });
 
-router.delete("/tasks/:id", async (req, res) => {
-  const id = req.params.id;
-
+router.delete("/tasks/:id", auth, async (req, res) => {
+  const _id = req.params.id;
+  const author = req.user._id;
   try {
-    const tasks = await Tasks.findByIdAndDelete(id);
+    const tasks = await Tasks.findOneAndDelete({ _id, author });
 
     if (!tasks) {
       return res.status(404).send();
