@@ -61,7 +61,7 @@ userSchem.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchem.methods.toJSON = async function () {
+userSchem.methods.toJSON =  function () {
   const user = this;
 
   const userObject = user.toObject();

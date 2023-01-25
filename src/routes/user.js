@@ -58,22 +58,8 @@ router.get("/users/me", auth, async (req, res) => {
   res.send(req.user);
 });
 
-router.get("/users/:id", auth, async (req, res) => {
-  const _id = req.params.id;
-
-  try {
-    const user = await Users.findById(_id);
-    if (!user) {
-      return res.status(404).send();
-    }
-    res.send(user);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
-router.patch("/users/:id", auth, async (req, res) => {
-  const _id = req.params.id;
+router.patch("/users/me", auth, async (req, res) => {
+  const user = req.user;
   const body = req.body;
 
   const allowedUpdates = ["name", "email", "password", "age"];
@@ -82,14 +68,10 @@ router.patch("/users/:id", auth, async (req, res) => {
     return res.status(404).send({ error: "Invalid inputs" });
   }
   try {
-    const user = await Users.findById(_id);
     Object.keys(body).forEach((update) => (user[update] = body[update]));
 
     await user.save();
 
-    if (!user) {
-      return res.status(404).send();
-    }
     res.send(user);
   } catch (error) {
     res.status(400).send(inValidPatchInput(error));
@@ -98,16 +80,10 @@ router.patch("/users/:id", auth, async (req, res) => {
   }
 });
 
-router.delete("/users/:id", auth, async (req, res) => {
-  const id = req.params.id;
-
+router.delete("/users/me", auth, async (req, res) => {
   try {
-    const user = await Users.findByIdAndDelete(id);
-
-    if (!user) {
-      return res.status(404).send();
-    }
-    res.send(user);
+    await req.user.remove();
+    res.send(req.user);
   } catch (error) {
     res.status(500).send();
   }
