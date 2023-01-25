@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Tasks } from "../db/mongoose.js";
+import {auth} from "../middleware/auth.js"
 import {
   inValidTaskInput,
   inValidUpdateInput,
@@ -7,8 +8,12 @@ import {
 
 const router = Router();
 
-router.post("/tasks", async (req, res) => {
-  const task = new Tasks(req.body);
+router.post("/tasks",auth ,async (req, res) => {
+  const task = new Tasks({
+    ...req.body,
+    author: req.user._id
+  });
+  
   try {
     await task.save();
     res.status(201).send(task);
