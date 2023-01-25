@@ -3,7 +3,6 @@ import { Users } from "../db/mongoose.js";
 import { auth } from "../middleware/auth.js";
 const router = express.Router();
 import {
-  inValidPatchInput,
   inValidUpdateInput,
   inValidUserInput,
 } from "../errors/errorHandeling.js";
@@ -74,7 +73,7 @@ router.patch("/users/me", auth, async (req, res) => {
 
     res.send(user);
   } catch (error) {
-    res.status(400).send(inValidPatchInput(error));
+    res.status(400).send(inValidUserInput(error));
 
     res.status(500).send();
   }

@@ -50,6 +50,12 @@ export const userSchem = new Schema({
   ],
 });
 
+userSchem.virtual("task", {
+  ref: "tasks",
+  localField: "_id",
+  foreignField: "author",
+});
+
 userSchem.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user.id.toString() }, "thisneedtochange");
@@ -61,7 +67,7 @@ userSchem.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchem.methods.toJSON =  function () {
+userSchem.methods.toJSON = function () {
   const user = this;
 
   const userObject = user.toObject();
