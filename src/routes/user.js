@@ -1,5 +1,5 @@
 import express from "express";
-import { Users } from "../db/mongoose.js";
+import { Users } from "../db/model/mongoose.js";
 import { auth } from "../middleware/auth.js";
 const router = express.Router();
 import {

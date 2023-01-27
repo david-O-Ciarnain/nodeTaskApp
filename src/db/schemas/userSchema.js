@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
-import { Tasks, Users } from "../mongoose.js";
+import { Tasks, Users } from "../model/mongoose.js";
 import jwt from "jsonwebtoken";
 
 const Schema = mongoose.Schema;
@@ -48,6 +48,9 @@ export const userSchem = new Schema({
       },
     },
   ],
+},{
+  timestamps:true,
+
 });
 
 userSchem.virtual("task", {

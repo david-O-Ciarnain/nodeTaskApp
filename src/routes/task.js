@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Tasks } from "../db/mongoose.js";
+import { Tasks } from "../db/model/mongoose.js";
 import { auth } from "../middleware/auth.js";
 import {
   inValidTaskInput,

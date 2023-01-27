@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Users } from "../db/mongoose.js";
+import { Users } from "../db/model/mongoose.js";
 
 export const auth = async (req, res, next) => {
   try {

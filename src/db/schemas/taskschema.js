@@ -18,4 +18,6 @@ export const taskSchem = new Schema({
     required: true,
     ref: 'users'
   },
+},{
+ timestamps:true 
 });
