@@ -1,25 +1,12 @@
 import express from "express";
 import { Users } from "../db/model/mongoose.js";
 import { auth } from "../middleware/auth.js";
-import multer from "multer";
+import { uploadFile } from "../filehandler/imageFileValidation.js";
 const router = express.Router();
 import {
   inValidUpdateInput,
   inValidUserInput,
 } from "../errors/errorHandeling.js";
-
-const uploadFile = multer({
-  dest: "avatar",
-  limits: {
-    fileSize: 2000008,
-  },
-  fileFilter(req, file, callback) {
-    if (file.originalname.match(/\.(.png|.jpg|.jpeg)$/)) {
-      return callback(new Error("Please upload a image"));
-    }
-    callback(undefined, true);
-  },
-});
 
 router.post("/users", async (req, res) => {
   const user = new Users(req.body);
@@ -102,8 +89,13 @@ router.delete("/users/me", auth, async (req, res) => {
   }
 });
 
-router.post("/user/me/avatar", uploadFile.single("avatar"), (req, res) => {
-  res.send();
-});
+router.post(
+  "/user/me/avatar",
+  uploadFile.single("avatar"),
+  (req, res) => {
+    res.send();
+  },
+  (error, req, res, next) => res.status(400).send("error: " + error.message)
+);
 
 export default router;
