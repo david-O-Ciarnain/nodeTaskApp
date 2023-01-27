@@ -94,7 +94,6 @@ router.post(
   auth,
   uploadFile.single("avatar"),
   async (req, res) => {
-    console.log(req.user.avatar);
     req.user.avatar = req.file.buffer;
     await req.user.save();
     res.status(201).send("Image successful upload");
@@ -112,9 +111,23 @@ router.delete("/user/me/avatar", auth, async (req, res) => {
   try {
     req.user.avatar = undefined;
     await req.user.save();
-    res.send("Image successful delete");
+    res.send("Image successfuly deleted");
   } catch (error) {
     res.status(500).send();
+  }
+});
+
+router.get("/user/:id/avatar", async (req, res) => {
+  try {
+    const user = await Users.findById(req.params.id);
+    if (!user || !user.avatar) {
+      throw new Error();
+    }
+
+    res.set("Content-Type", "image/jpg");
+    res.send(user.avatar);
+  } catch (error) {
+    res.status(404).send();
   }
 });
 
