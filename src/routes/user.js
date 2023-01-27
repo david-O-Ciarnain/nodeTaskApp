@@ -7,7 +7,7 @@ import {
   inValidUpdateInput,
   inValidUserInput,
 } from "../errors/errorHandeling.js";
-
+import sharp from "sharp";
 router.post("/users", async (req, res) => {
   const user = new Users(req.body);
 
@@ -94,7 +94,11 @@ router.post(
   auth,
   uploadFile.single("avatar"),
   async (req, res) => {
-    req.user.avatar = req.file.buffer;
+    const buffer = await sharp(req.file.buffer)
+      .resize(250, 250)
+      .png()
+      .toBuffer();
+    req.user.avatar = buffer;
     await req.user.save();
     res.status(201).send("Image successful upload");
   },
@@ -124,7 +128,7 @@ router.get("/user/:id/avatar", async (req, res) => {
       throw new Error();
     }
 
-    res.set("Content-Type", "image/jpg");
+    res.set("Content-Type", "image/png");
     res.send(user.avatar);
   } catch (error) {
     res.status(404).send();
