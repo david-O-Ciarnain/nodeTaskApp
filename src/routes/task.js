@@ -26,19 +26,25 @@ router.get("/tasks", auth, async (req, res) => {
   const author = req.user;
 
   const match = {};
-
+  let sort = {};
   if (req.query.completed) {
     match.completed = req.query.completed === "true";
+  }
+
+  if (req.query.sorteBy) {
+    const parts = req.query.sorteBy.split(":");
+    sort[parts[0]] = parts[1] === `desc` ? -1 : 1;
   }
 
   try {
     await author.populate({
       path: "task",
       match,
-      options:{
+      options: {
         limit: parseInt(req.query.limit),
-        skip:parseInt(req.query.skip)
-      }
+        skip: parseInt(req.query.skip),
+        sort,
+      },
     });
     res.send(author.task);
   } catch (error) {
