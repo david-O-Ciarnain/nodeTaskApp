@@ -23,11 +23,22 @@ router.post("/tasks", auth, async (req, res) => {
 });
 
 router.get("/tasks", auth, async (req, res) => {
-  const author = req.user._id;
+  const author = req.user;
+
+  const match = {};
+
+  if (req.query.completed) {
+    match.completed = req.query.completed === "true";
+  }
+
   try {
-    const task = await Tasks.find({ author });
-    res.send(task);
+    await author.populate({
+      path: "task",
+      match,
+    });
+    res.send(author.task);
   } catch (error) {
+    console.log(error);
     res.status(500).send();
   }
 });
