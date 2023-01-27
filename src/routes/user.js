@@ -97,11 +97,25 @@ router.post(
     console.log(req.user.avatar);
     req.user.avatar = req.file.buffer;
     await req.user.save();
-    res.send("Image successful upload");
+    res.status(201).send("Image successful upload");
   },
   (error, req, res, next) => {
     res.status(400).send("error: " + error.message);
   }
 );
+
+router.delete("/user/me/avatar", auth, async (req, res) => {
+  const avatar = req.user.avatar;
+  if (!avatar) {
+    return res.status(404).send();
+  }
+  try {
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.send("Image successful delete");
+  } catch (error) {
+    res.status(500).send();
+  }
+});
 
 export default router;
