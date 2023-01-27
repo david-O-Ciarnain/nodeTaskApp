@@ -91,11 +91,17 @@ router.delete("/users/me", auth, async (req, res) => {
 
 router.post(
   "/user/me/avatar",
+  auth,
   uploadFile.single("avatar"),
-  (req, res) => {
-    res.send();
+  async (req, res) => {
+    console.log(req.user.avatar);
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
+    res.send("Image successful upload");
   },
-  (error, req, res, next) => res.status(400).send("error: " + error.message)
+  (error, req, res, next) => {
+    res.status(400).send("error: " + error.message);
+  }
 );
 
 export default router;

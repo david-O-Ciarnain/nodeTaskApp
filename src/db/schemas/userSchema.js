@@ -6,52 +6,57 @@ import jwt from "jsonwebtoken";
 
 const Schema = mongoose.Schema;
 
-export const userSchem = new Schema({
-  name: {
-    type: String,
-    minlength: 1,
-    required: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 7,
-    validate(value) {
-      if (validator.contains(value.toLowerCase(), "password"))
-        throw new Error("Invalid password, can't be password");
+export const userSchem = new Schema(
+  {
+    name: {
+      type: String,
+      minlength: 1,
+      required: true,
+      trim: true,
     },
-  },
-  email: {
-    type: String,
-    validate(value) {
-      if (!validator.isEmail(value)) throw new Error("Invalid email");
-    },
-    required: true,
-    lowercase: true,
-    trim: true,
-    unique: true,
-  },
-  age: {
-    type: Number,
-    validate(value) {
-      if (value < 0) throw new Error("Age must be a postive number");
-    },
-    default: 0,
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 7,
+      validate(value) {
+        if (validator.contains(value.toLowerCase(), "password"))
+          throw new Error("Invalid password, can't be password");
       },
     },
-  ],
-},{
-  timestamps:true,
-
-});
+    email: {
+      type: String,
+      validate(value) {
+        if (!validator.isEmail(value)) throw new Error("Invalid email");
+      },
+      required: true,
+      lowercase: true,
+      trim: true,
+      unique: true,
+    },
+    age: {
+      type: Number,
+      validate(value) {
+        if (value < 0) throw new Error("Age must be a postive number");
+      },
+      default: 0,
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    avatar: {
+      type: Buffer,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 userSchem.virtual("task", {
   ref: "tasks",
@@ -108,8 +113,8 @@ userSchem.pre("save", async function (next) {
   next();
 });
 
-userSchem.pre("remove",async function(next){
+userSchem.pre("remove", async function (next) {
   const user = this;
-  await Tasks.deleteMany({author:user._id})
-  next()
-})
+  await Tasks.deleteMany({ author: user._id });
+  next();
+});
