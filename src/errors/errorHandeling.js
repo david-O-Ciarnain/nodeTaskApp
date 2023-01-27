@@ -1,24 +1,19 @@
 //User errors
 
 export const inValidUserInput = (error) => {
-  console.log(error);
-
-  let message = ""
   if (error.hasOwnProperty("keyValue"))
-    return `Email already exists: ${ error["keyValue"]["email"]}`;
-    
-  if (error["errors"].hasOwnProperty("password"))
-    message += error["errors"]["password"].message + " ";
-  else if (error["errors"].hasOwnProperty("name"))
-    message += error["errors"]["name"].message;
-  
-  return message
+    return `Email already exists: ${error["keyValue"]["email"]}`;
+
+  if (error.hasOwnProperty("errors")) {
+    if (error["errors"].hasOwnProperty("password"))
+      return error["errors"]["password"].message + " ";
+    else if (error["errors"].hasOwnProperty("name"))
+      return error["errors"]["name"].message;
+  }
 };
 
 export const inValidUpdateInput = (body = {}, allowedUpdates = []) =>
   Object.keys(body).every((allowed) => allowedUpdates.includes(allowed));
-
-
 
 //Task Errors
 

@@ -102,8 +102,6 @@ userSchem.statics.finByCredentials = async function (email, password) {
   return user;
 };
 
-//Hash password
-//midleWare
 userSchem.pre("save", async function (next) {
   const user = this;
 
