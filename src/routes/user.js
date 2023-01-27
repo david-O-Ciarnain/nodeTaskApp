@@ -1,11 +1,16 @@
 import express from "express";
 import { Users } from "../db/model/mongoose.js";
 import { auth } from "../middleware/auth.js";
+import multer from "multer";
 const router = express.Router();
 import {
   inValidUpdateInput,
   inValidUserInput,
 } from "../errors/errorHandeling.js";
+
+const uploadFile = multer({
+  dest: "avatar",
+});
 
 router.post("/users", async (req, res) => {
   const user = new Users(req.body);
@@ -86,6 +91,10 @@ router.delete("/users/me", auth, async (req, res) => {
   } catch (error) {
     res.status(500).send();
   }
+});
+
+router.post("/user/me/avatar", uploadFile.single("avatar"), (req, res) => {
+  res.send();
 });
 
 export default router;
