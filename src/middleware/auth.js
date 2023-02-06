@@ -4,7 +4,7 @@ import { Users } from "../db/model/mongoose.js";
 export const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
-    const decoded = jwt.verify(token, "thisneedtochange");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await Users.findOne({
       _id: decoded._id,
       "tokens.token": token,
