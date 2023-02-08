@@ -9,6 +9,7 @@ import {
   inValidUserInput,
 } from "../errors/errorHandeling.js";
 import sharp from "sharp";
+
 router.post("/users", async (req, res) => {
   const user = new Users(req.body);
 
