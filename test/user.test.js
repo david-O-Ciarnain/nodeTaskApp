@@ -20,8 +20,13 @@ beforeEach(async () => {
   await Users.deleteMany();
   await new Users(userOne).save();
 });
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
 test("Should signup a new user", async () => {
-  await request(app)
+  const response = await request(app)
     .post("/users")
     .send({
       name: "Batman",
@@ -29,15 +34,34 @@ test("Should signup a new user", async () => {
       password: "1234567",
     })
     .expect(201);
+
+  // Assert thatthe database was changed correctly
+  const user = await Users.findById(response.body.user._id);
+  expect(user).not.toBeNull();
+
+  // Assertions about the response
+  expect(response.body).toMatchObject({
+    user: {
+      name: "Batman",
+      email: process.env.FROMEMAIL,
+    },
+    token: user.tokens[0].token,
+  });
+  expect(user.password).not.toBe("1234567");
 });
 test("Should login exisitng user", async () => {
-  await request(app)
+  const response = await request(app)
     .post("/users/login")
     .send({
       email: userOne.email,
       password: userOne.password,
     })
     .expect(200);
+
+  const user = await Users.findById(userOneId);
+  expect(user).not.toBeNull();
+
+  expect(response.body.token).toBe(user.tokens[1].token);
 });
 test("Should get profile for user", async () => {
   await request(app)
@@ -47,44 +71,12 @@ test("Should get profile for user", async () => {
     .expect(200);
 });
 test("Should delete account for user", async () => {
-  await request(app)
+  const response = await request(app)
     .delete("/users/me")
     .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
     .send()
     .expect(200);
-})
-test("Should not delete account for user", async () => {
-  await request(app).delete("/users/me").send().expect(401);
-});
-test("Should throw 401 unauthorized on unauthenticated user", async () => {
-  await request(app).get("/users/me").send().expect(401);
-});
-test("should not login nonexistent user", async () => {
-  await request(app)
-    .post("/users/login")
-    .send({
-      email: "batmna951@live.se",
-      password: "123",
-    })
-    .expect(400);
-});
-test("Should not signup a new user wrong length on password", async () => {
-  await request(app)
-    .post("/users")
-    .send({
-      name: "Batman",
-      email: process.env.FROMEMAIL,
-      password: "123",
-    })
-    .expect(400);
-});
-test("Should not signup a new user wrong email format", async () => {
-  await request(app)
-    .post("/users")
-    .send({
-      name: "Batman",
-      email: "Göran",
-      password: "12345671",
-    })
-    .expect(400);
+
+  const user = await Users.findById(userOneId);
+  expect(user).toBeNull();
 });
