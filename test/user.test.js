@@ -16,6 +16,7 @@ const userOne = {
     },
   ],
 };
+
 beforeEach(async () => {
   await Users.deleteMany();
   await new Users(userOne).save();
@@ -80,3 +81,46 @@ test("Should delete account for user", async () => {
   const user = await Users.findById(userOneId);
   expect(user).toBeNull();
 });
+
+test("Should upload avatar image", async (done) => {
+  await request(app)
+    .post("/user/me/avatar")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .attach("avatar", "test/fixtures/profile-pic.jpg")
+    .expect(201);
+  const user = await Users.findById(userOneId);
+  expect(user.avatar).toEqual(expect.any(Buffer));
+});
+
+test("Should update valid user fields", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({
+      name: "Mike",
+    })
+    .expect(200);
+
+  const user = await Users.findById(userOneId);
+  expect(user.name).toEqual("Mike");
+});
+
+test("Should not update invalid user fields", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({
+      chrash: "not working",
+    })
+    .expect(404);
+});
+
+test('Should not update invalid field format',async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({
+      password: "5",
+    })
+    .expect(400);
+})
