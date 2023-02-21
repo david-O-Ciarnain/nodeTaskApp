@@ -60,4 +60,14 @@ test("Should not delete account for user", async () => {
       })
       .expect(400);
   });
+
+  test('Should not update invalid field format',async () => {
+    await request(app)
+      .patch("/users/me")
+      .set("Authorization", `Bearer ${userTwo.tokens[0].token}`)
+      .send({
+        password: "5",
+      })
+      .expect(400);
+  })
   
